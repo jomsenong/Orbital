@@ -1,0 +1,29 @@
+<!-- Wish list -->
+{% extends "base.html" %}
+{% block content %}
+
+<h4> Wish List of {{ target_mail }} </h4>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th width="70%">Item</th>
+        <th>Link</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr>
+            <td>{{ item.description }} </td>
+            <td>
+                {% if item.image_link != "" %}
+                    <a href="{{ item.item_link }}" target="_blank"><img class="itemimage"
+                                                                        src="{{ item.image_link }}"></a>
+                {% endif %}
+            </td>
+            <td>{{ item.date.strftime('%Y-%m-%d')  }} </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

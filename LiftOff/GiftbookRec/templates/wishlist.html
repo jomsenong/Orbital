@@ -1,0 +1,96 @@
+<!-- Wish list -->
+{% extends "base.html" %}
+{% block content %}
+
+    <form action="/wishlist" method="post">
+        <fieldset>
+            <div class="row-fluid">
+                <p> Add item to wish list: </p>
+
+                <div class="span5">
+                    Item url: <input class="input-xlarge" type="text" name="item_url" value="{{ item }}">
+                </div>
+                <div class="span6">
+                    Image url: <input class="input-xlarge" type="text" name="image_url" value="{{ image }}">
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span6">
+                    <p> Item description: <br>
+                        <textarea class="input-block-level" name="desc" rows="3"> {{ desc }} </textarea></p>
+
+                    <p><input type="submit" value="Submit">
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <!-- Error message -->
+    {% if error != "" %}
+        <div class="err"> {{ error }} </div>
+    {% endif %}
+
+    <!-- Carousel showing recommendations -->
+    {% if pairlist|length %}
+        <div class="hidden-phone">
+        Users with items in your wish list are also interested in these items
+        <div id="myCarousel" class="carousel slide">
+            <!-- Carousel items -->
+            <div class="carousel-inner">
+                {% for item_url, image_url in pairlist %}
+                    {% if loop.index0 % numdisplay == 0 %}
+                        <div {% if loop.index0 == 0 %} class="active item" {% else %} class="item" {% endif %}>
+                        <table align="center">
+                        <tbody>
+                        <tr>
+                    {% endif %}
+                <td><a href="{{ item_url }}" target="_blank"><img class="itemimage" src="{{ image_url }}"></a></td>
+                {% if ((loop.index0 + 1) % numdisplay == 0) or loop.last %}
+                    </tr>
+                    </tbody>
+                    </table>
+                    </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <!-- Carousel nav -->
+            <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+            <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+
+        </div>
+        </div>
+    {% endif %}
+
+    <!-- User's wish list -->
+    <h4> Your Wish List </h4>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th width="70%">Item</th>
+            <th>Link</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.description }} </td>
+                <td>
+                    {% if item.image_link != "" %}
+                        <a href="{{ item.item_link }}" target="_blank"><img class="itemimage"
+                                                                            src="{{ item.image_link }}"></a>
+                    {% endif %}
+                </td>
+                <td>{{ item.date.strftime('%Y-%m-%d')  }} <br>
+
+                    <form action="/deleteitem" method="post">
+                        <input type="hidden" name="itemid" value="{{ item.item_id }}">
+                        <input type="submit" value="Delete">
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
